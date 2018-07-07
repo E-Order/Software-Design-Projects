@@ -11,8 +11,12 @@
     - [架构设计](#10)
     - [模块划分](#11)
 - [E-Order Backend](#3)
+    - [技术选择](#12)
+    - [架构设计](#13)
+    - [模块划分](#14)
+    - [数据库设计](#15)
 
-<h2 id='1'> E-Order Frontend (微信小程序) </h2>
+<h2 id='1'> 一、E-Order Frontend (微信小程序) </h2>
 
 - 用户端设计采用微信小程序来实现。
 
@@ -264,7 +268,7 @@ E-order操作界面简单美观更便捷。点击购物车图标，购物车图�
   [3]: https://raw.githubusercontent.com/LTimmy/markdownPhotos/master/UI8.png
   [4]: https://raw.githubusercontent.com/LTimmy/markdownPhotos/master/UI9.png
   
-<h2 id='2'> Seller Management System Frontend (商家) </h2>  
+<h2 id='2'> 二、Seller Management System Frontend (商家) </h2>  
 
 <h3 id='9'> 1. 技术选择：</h3>
 
@@ -351,4 +355,158 @@ axios.get(this.url, {params:{
     - 类目管理：productManagement.js
     - 类目菜品管理：editProducts.js
 
+<h2 id='3=> 三、E-Order Backend </h2>
+
+<h3 id='12'> 1.技术选择 </h3>
+
+- **Spring Boot**是有Pivotal团队提供的全新框架，其设计目的是用来简化Spring应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置，我们也可以称它为SpringMVC框架的精简版。它最大的优点就是摆脱了Spring框架中各种复杂的配置，同时继承了大量常用的第三方库配置，开发人员在使用的时候只需要少量的配置代码，可以进行快速、敏捷地开发。
+    * 独立运行的Spring 项目，可以以jar包的形式独立运行
+    * 内嵌Servlet 容器
+    * 提供starter简化Maven 配置
+    * 自动配置Spring
+    * 准生产的应用监控
+    * 无代码生成和xml配置
+
+<h3 id='13'> 2.架构设计 </h3>
+
+#### 三层架构
+
+- 表示层（present layer）: 
+    - 处理 HTTP 输入（Request），然后调用业务服务，产生输出（Response）。这里，应用开发人员只需要考虑 MVC 三个编程元素。
+    
+    - MVC把三层架构中的UI层再度进行了分化，分成了控制器、视图、实体三个部分，控制器完成页面逻辑，通过实体来与界面层完成通话
+    
+       - M（模型/Model）：业务涉及的数据对象实例。例如，你显示一定订单，它包含用户、订单、订单项、支付等业务 对象数据；
+       - V（视图/View）：展示业务人机交互界面的显示模板。例如，jsp 文件等，它能将模型中的数据填入显示模板，用户可看到界面元素丰富的界面；
+       - C（控制器/Controller）：用户输入处理单元。它检查输入的合法性，处理输入表单，按流程调用业务函数，生成输出需要的数据模型，选择视图模板，输出。
+       - 使用MVC结构编程，使得程序业务逻辑清晰，模块结构好。对提升开发效率，增
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ @south270 Sign out
+1
+0 0 E-Order/Software-Design-Projects
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights  Settings
+Software-Design-Projects/ 
+软件设计文档(SDS).md
+  or cancel
+    
+ 
+348
+​
+349
+    - 路由： index.js
+350
+    - 用户登陆：signInShow.js
+351
+    - 用户注册：signUpShow.js
+352
+    - 商家设置：UserSetting.js
+353
+    - 订单管理:  orderManagement.js
+354
+    - 商品管理：
+355
+    - 类目管理：productManagement.js
+356
+    - 类目菜品管理：editProducts.js
+357
+​
+358
+<h2 id='3=> 三、E-Order Backend </h2>
+359
+​
+360
+<h3 id='12'> 1.技术选择 </h3>
+361
+​
+362
+- **Spring Boot**是有Pivotal团队提供的全新框架，其设计目的是用来简化Spring应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置，我们也可以称它为SpringMVC框架的精简版。它最大的优点就是摆脱了Spring框架中各种复杂的配置，同时继承了大量常用的第三方库配置，开发人员在使用的时候只需要少量的配置代码，可以进行快速、敏捷地开发。
+363
+    * 独立运行的Spring 项目，可以以jar包的形式独立运行
+364
+    * 内嵌Servlet 容器
+365
+    * 提供starter简化Maven 配置
+366
+    * 自动配置Spring
+367
+    * 准生产的应用监控
+368
+    * 无代码生成和xml配置
+369
+​
+370
+<h3 id='13'> 2.架构设计 </h3>
+371
+​
+372
+#### 三层架构
+373
+​
+374
+- 表示层（present layer）: 
+375
+    - 处理 HTTP 输入（Request），然后调用业务服务，产生输出（Response）。这里，应用开发人员只需要考虑 MVC 三个编程元素。
+376
+    
+377
+    - MVC把三层架构中的UI层再度进行了分化，分成了控制器、视图、实体三个部分，控制器完成页面逻辑，通过实体来与界面层完成通话
+378
+    
+379
+       - M（模型/Model）：业务涉及的数据对象实例。例如，你显示一定订单，它包含用户、订单、订单项、支付等业务 对象数据；
+380
+       - V（视图/View）：展示业务人机交互界面的显示模板。例如，jsp 文件等，它能将模型中的数据填入显示模板，用户可看到界面元素丰富的界面；
+381
+       - C（控制器/Controller）：用户输入处理单元。它检查输入的合法性，处理输入表单，按流程调用业务函数，生成输出需要的数据模型，选择视图模板，输出。
+382
+       - 使用MVC结构编程，使得程序业务逻辑清晰，模块结构好。对提升开发效率，增强可维护性，促进团队内部按技能分工，起到关键作用，因此几乎所有语言都有自己若干不同的 MVC 支持框架实现。
+383
+       
+384
+- 业务层（business layer）: 
+385
+    - 提供满足 ACID 要求的业务服务。这里，开发人员只需声明对外的业务服务函数，spring 等提供事务（Transaction）支持。
+386
+​
+387
+- 持久化层（persistence layer）：
+388
+    - 提供数据表存取机制，主要是 ORM 框架实现以对象-关系数据库的映射。这里，开发人员只需声明表和对象的映射，特殊的 SQL。
+389
+​
+390
+#### E-order逻辑架构
+391
+​
+392
+![](https://raw.githubusercontent.com/E-Order/Dashboard/master/document/graph/%E9%80%BB%E8%BE%91%E8%A7%86%E5%9B%BE.png)
+393
+​
+394
+<h3 id='14'> 3.模块划分 </h3>
+395
+<h3 id='15'> 4.数据库设计 </h3>
+396
+​
+397
+​
+强可维护性，促进团队内部按技能分工，起到关键作用，因此几乎所有语言都有自己若干不同的 MVC 支持框架实现。
+       
+- 业务层（business layer）: 
+    - 提供满足 ACID 要求的业务服务。这里，开发人员只需声明对外的业务服务函数，spring 等提供事务（Transaction）支持。
+
+- 持久化层（persistence layer）：
+    - 提供数据表存取机制，主要是 ORM 框架实现以对象-关系数据库的映射。这里，开发人员只需声明表和对象的映射，特殊的 SQL。
+
+#### E-order逻辑架构
+
+![](https://raw.githubusercontent.com/E-Order/Dashboard/master/document/graph/%E9%80%BB%E8%BE%91%E8%A7%86%E5%9B%BE.png)
+
+<h3 id='14'> 3.模块划分 </h3>
+<h3 id='15'> 4.数据库设计 </h3>
 
