@@ -47,11 +47,11 @@
 两个系统： 用户点餐系统、商家管理系统
 
 
- 1 用例图
+ ### 1 用例图
  
 ![image.png](https://upload-images.jianshu.io/upload_images/13021922-785afe53979283bb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-2 用例描述
+### 2 用例描述
 
 ### 扫码点餐Brief用例
 
@@ -113,8 +113,7 @@
   
   如果显示的订单与自己所点的不一致，则可以呼叫服务员进行处理；
  
-  如果系统出现问题，如卡死或者其他无法操作的情况，则需要人工呼叫服务员进行处理；
-  
+  如果系统出现问题，如卡死或者其他无法操作的情况，则需要人工呼叫服务员进行处理；  
   如果需要额外增加菜品，则需要返回到点餐界面进行操作;
   
   如果已经进行过催单操作，还想再次催单，需要联系服务员。
@@ -145,8 +144,8 @@
 
 
 - 点餐
-
-<img src = "https://github.com/E-Order/Dashboard/blob/master/document/Requirement_Specification/%E7%B3%BB%E7%BB%9F%E9%A1%BA%E5%BA%8F%E5%9B%BE/order_ssd.png>
+ 
+  ![order](https://raw.githubusercontent.com/E-Order/Dashboard/master/document/Requirement_Specification/系统顺序图/order_ssd.png)
         
 - 管理购物车
 ![管理购物车15331209](https://github.com/E-Order/Dashboard/blob/master/document/Requirement_Specification/%E7%B3%BB%E7%BB%9F%E9%A1%BA%E5%BA%8F%E5%9B%BE/15331209_%E7%AE%A1%E7%90%86%E8%B4%AD%E7%89%A9%E8%BD%A6.png)
