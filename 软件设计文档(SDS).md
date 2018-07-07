@@ -274,7 +274,7 @@ E-order操作界面简单美观更便捷。点击购物车图标，购物车图�
 <h3 id='9'> 1. 技术选择：</h3>
 
 - 采用Vue.js+Element UI 的框架开发商家管理的Web客户端单页面应用
-- 使用nodejs开发Web Server
+- 使用Node.js+Express框架实现Web Server
 
 
 <h3> 2. 技术选型理由：</h3>
@@ -289,7 +289,17 @@ Vue.js:
 Element UI :
 - Element UI 是一套采用 Vue 2.0 作为基础框架实现的组件库，它面向企业级的后台应用，能够帮助你快速地搭建网站，极大地减少研发的人力与时间成本。它不依赖于vue,但是却是当前和vue配合做项目开发的一个比较好的ui框架。
 
+Node.js:
+- Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。 
+- Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。
+- 商家端这边的服务器只是一个静态资源服务器，Node.js比较适合于这种计算量小的应用场景。 
 <h3 id='10'> 3. 架构设计 </h3>
+
+**B/S架构**：
+- 商家管理系统采用的是浏览器和服务器架构模式。原因是因为商家需要对所有的菜品的类目和数量价格等详细的信息进行高效管理，还有及时处理客户的订单，所以采用浏览器和服务器交互的方式来实现。
+
+**SPA应用**
+- SPA应用，single page web application应用，就是加载单个HTML页面并在用户与应用程序交互时动态更新该页面的Web应用程序。选择SPA应用的原因就是因为不会出现白屏这种对用户不友好的体验。
 
 **MVVM**：
 
@@ -345,14 +355,14 @@ axios.get(this.url, {params:{
 
 <h3 id='11'> 4. 模块划分 </h3>
 
-- 一个组件表示一个页面, 通过rooter路由渲染不同页面（一个js一个组件）
+- 每一个页面分为导航栏和主内容两个模块，由两个组件构成，而页面间的跳转是通过路由实现的。每一个路由对应的组件都不一样，从而得到不同的页面。通过注册不同的组件来实现。每一个js文件注册一个全局组件。
 
     - 路由： index.js
     - 用户登陆：signInShow.js
     - 用户注册：signUpShow.js
     - 商家设置：UserSetting.js
     - 订单管理:  orderManagement.js
-    - 商品管理：
+    - 联系方式：Contact.js
     - 类目管理：productManagement.js
     - 类目菜品管理：editProducts.js
 
