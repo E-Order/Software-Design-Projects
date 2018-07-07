@@ -2,12 +2,14 @@
 
 - [E-Order Frontend (微信小程序)](#1)
     - [安装](#4)
-    - [技术选择理由](#5)
+    - [技术选择](#5)
     - [架构设计](#6)
     - [模块划分](#7)
     - [UI设计指南](#8)
 - [Seller Management System Frontend (商家)](#2)
-
+    - [技术选择](#9)
+    - [架构设计](#10)
+    - [模块划分](#11)
 - [E-Order Backend](#3)
 
 <h2 id='1'> E-Order Frontend (微信小程序) </h2>
@@ -261,3 +263,92 @@ E-order操作界面简单美观更便捷。点击购物车图标，购物车图�
   [2]: https://raw.githubusercontent.com/LTimmy/markdownPhotos/master/UI4.png
   [3]: https://raw.githubusercontent.com/LTimmy/markdownPhotos/master/UI8.png
   [4]: https://raw.githubusercontent.com/LTimmy/markdownPhotos/master/UI9.png
+  
+<h2 id='2'> Seller Management System Frontend (商家) </h2>  
+
+<h3 id='9'> 1. 技术选择：</h3>
+
+- 采用Vue.js+Element UI 的框架开发商家管理的Web客户端单页面应用
+- 使用nodejs开发Web Server
+
+
+<h3> 2. 技术选型理由：</h3>
+
+Vue.js:
+- Vue.js是一个轻巧、高性能、可组件化的MVVM库，同时拥有非常容易上手的API
+
+-   Vue.js是一套构建用户界面的 渐进式框架。与其他重量级框架不同的是，Vue 采用自底向上增量开发的设计。Vue的核心库只关注视图层，并且非常容易学习，非常容易与其它库或已有项目整合。另一方面，Vue完全有能力驱动采用单文件组件和 Vue 生态系统支持的库开发的复杂单页应用。数据驱动+组件化的前端开发。
+
+- 简而言之：Vue.js是一个构建数据驱动的 web 界面的渐进式框架。Vue.js 的目标是通过尽可能简单的 API 实现响应的数据绑定和组合的视图组件。核心是一个响应的数据绑定系统。
+
+Element UI :
+- Element UI 是一套采用 Vue 2.0 作为基础框架实现的组件库，它面向企业级的后台应用，能够帮助你快速地搭建网站，极大地减少研发的人力与时间成本。它不依赖于vue,但是却是当前和vue配合做项目开发的一个比较好的ui框架。
+
+<h3 id='10'> 3. 架构设计 </h3>
+
+**MVVM**：
+
+- MVVM是把MVC里的Controller和MVP里的Presenter改成了ViewModel。Model+View+ViewModel。
+
+![image.png](https://upload-images.jianshu.io/upload_images/13021922-8babf46ec7234d26.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+- 把Model和View关联起来的就是ViewModel。ViewModel负责把Model的数据同步到View显示出来，还负责把View的修改同步回Model。
+
+- View的变化会自动更新到ViewModel,ViewModel的变化也会自动同步到View上显示。
+这种自动同步是因为ViewModel中的属性实现了Observer，当属性变更时都能触发对应的操作。
+
+- **View 层**，作为视图模板存在，在 MVVM 里，整个 View 是一个动态模板。除了定义结构、布局外，它展示的是 ViewModel 层的数据和状态。View 层不负责处理状态，View 层做的是 数据绑定的声明、 指令的声明、 事件绑定的声明。
+```
+<el-table
+        :data="tableData" //----数据绑定
+        @filter-change="handleFilterChange" //----事件绑定
+        style="width: 100%">
+```
+- ViewModel 层把 View 需要的层数据暴露，并对 View 层的 数据绑定声明、 指令声明、 事件绑定声明 负责，也就是处理 View 层的具体业务逻辑。ViewModel 底层会做好绑定属性的监听。当 ViewModel 中数据变化，View 层会得到更新；而当 View 中声明了数据的双向绑定（通常是表单元素），框架也会监听 View 层（表单）值的变化。一旦值变化，View 层绑定的 ViewModel 中的数据也会得到自动更新。
+
+```
+handleFinish(index, row) {
+            this.idx = row.index;
+            this.Tofinish = true;
+        },
+```
+- **Model 层**，对应数据层的域模型，它主要做域模型的同步。通过 Ajax/fetch 等 API 完成客户端和服务端业务 Model 的同步。
+
+```
+axios.get(this.url, {params:{
+                orderId: this.searchCriteria.orderId,
+                deskId: this.searchCriteria.deskId,
+                orderStatus: this.searchCriteria.orderStatus,
+                payStatus: this.searchCriteria.payStatus,
+                orderDate: this.searchCriteria.orderDate,
+                page: this.cur_page-1,
+                size: this.page_size
+            }}).then((res) => {
+                //console.log(res);
+                this.tableData = res.data.data;
+                this.orderNum = res.data.total;
+                for (var i = 0; i < this.tableData.length; i++) {
+                    Vue.set(this.tableData[i],'index',i);
+                    d = this.Format(this.tableData[i].createTime*1000,"yyyy-MM-dd");
+                    Vue.set(this.tableData[i],'date',d);
+                    this.getDetail(i);
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+```
+
+<h3 id='11'> 4. 模块划分 </h3>
+
+- 一个组件表示一个页面, 通过rooter路由渲染不同页面（一个js一个组件）
+
+    - 路由： index.js
+    - 用户登陆：signInShow.js
+    - 用户注册：signUpShow.js
+    - 商家设置：UserSetting.js
+    - 订单管理:  orderManagement.js
+    - 商品管理：
+    - 类目管理：productManagement.js
+    - 类目菜品管理：editProducts.js
+
+
