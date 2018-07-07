@@ -15,3 +15,7 @@
 - [软件设计文档SD](https://github.com/E-Order/Software-Design-Projects/blob/master/%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3(SDS).md)
 
 - [小组分工与贡献率说明](https://github.com/E-Order/Software-Design-Projects/blob/master/%E5%B0%8F%E7%BB%84%E5%88%86%E5%B7%A5%E4%B8%8E%E8%B4%A1%E7%8C%AE%E7%8E%87%E8%AF%B4%E6%98%8E.md)
+
+- [微信小程序效果展示]
+<iframe height=500 width=500 src="https://github.com/E-Order/Dashboard/blob/master/document/ls6i4-ae9kw.gif">
+
