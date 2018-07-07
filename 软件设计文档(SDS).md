@@ -15,6 +15,7 @@
     - [架构设计](#13)
     - [模块划分](#14)
     - [数据库设计](#15)
+    - [API设计](https://ordermeal.docs.apiary.io/#)
 
 <h2 id='1'> 一、E-Order Frontend (微信小程序) </h2>
 
@@ -380,12 +381,144 @@ axios.get(this.url, {params:{
        - V（视图/View）：展示业务人机交互界面的显示模板。例如，jsp 文件等，它能将模型中的数据填入显示模板，用户可看到界面元素丰富的界面；
        - C（控制器/Controller）：用户输入处理单元。它检查输入的合法性，处理输入表单，按流程调用业务函数，生成输出需要的数据模型，选择视图模板，输出。
        - 使用MVC结构编程，使得程序业务逻辑清晰，模块结构好。对提升开发效率，增强可维护性，促进团队内部按技能分工，起到关键作用，因此几乎所有语言都有自己若干不同的 MVC 支持框架实现。
-
+       
+- 业务层（business layer）: 
+    - 提供满足 ACID 要求的业务服务。这里，开发人员只需声明对外的业务服务函数，spring 等提供事务（Transaction）支持。
+- 持久化层（persistence layer）：
+    - 提供数据表存取机制，主要是 ORM 框架实现以对象-关系数据库的映射。这里，开发人员只需声明表和对象的映射，特殊的 SQL。
 
 #### E-order逻辑架构
 
 ![](https://raw.githubusercontent.com/E-Order/Dashboard/master/document/graph/%E9%80%BB%E8%BE%91%E8%A7%86%E5%9B%BE.png)
 
+
+
 <h3 id='14'> 3.模块划分 </h3>
+
+#### 应用程序目录
+
+![](https://github.com/E-Order/Dashboard/raw/master/document/graph/%E5%8C%85%E5%9B%BE.png)
+
+- Controller层(用户访问后台的接口，通过用户输入的url检查输入合法性，处理表单，进而调用service)
+  - BuyerOrderController（买家端对于订单的操作）
+  - BuyerProductController（买家端对于商品的操作）
+  - SellerCategoryController（卖家端对于商品种类的操作）
+  - SellerInfoController（卖家端用户信息操作）
+  - SellerOrderController（卖家端对于订单操作）
+  - SellerProductController（卖家端对于商品操作）
+  - SellerUserController（卖家端用户注册登录登出）
+  - WeixinController（微信授权，获取openid）
+- Service层(提供可以对数据库对象进行的操作服务)
+  - BuyerService（检查当前用户是否授权）
+  - CategoryService （对商品种类进行操作）
+  - OrderService（对订单进行操作）
+  - ProduceService（对商品进行操作）
+  - SellerService（对卖家信息进行操作）
+- DAO层repository （数据库接口，通过DAO对数据库对象进行访问）
+  - OrderDetailRepository
+  - OrderMasterRepository
+  - ProductCategoryRepository
+  - ProductInfoRepository
+  - SellerInfoRepository
+
 <h3 id='15'> 4.数据库设计 </h3>
+
+![](https://github.com/E-Order/Dashboard/raw/master/document/graph/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1.png?raw=true)
+
+- order_detail
+
+```
+CREATE TABLE `order_detail` (
+  `detail_id` varchar(32) NOT NULL,
+  `order_id` varchar(32) NOT NULL,
+  `product_quantity` int(11) NOT NULL,
+  `product_id` varchar(32) NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`detail_id`),
+  KEY `index_order_id` (`order_id`),
+  KEY `index_product_id` (`product_id`),
+  CONSTRAINT `order_id` FOREIGN KEY (`order_id`) REFERENCES `order_master` (`order_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product_info` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+```
+
+- order_master
+
+
+```
+CREATE TABLE `order_master` (
+  `order_id` varchar(32) NOT NULL,
+  `desk_id` int(11) NOT NULL,
+  `seller_id` varchar(32) NOT NULL,
+  `buyer_openid` varchar(64) NOT NULL,
+  `order_amount` decimal(8,2) NOT NULL,
+  `order_status` tinyint(3) NOT NULL DEFAULT '0',
+  `pay_status` tinyint(3) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`order_id`),
+  KEY `index_buyer_openid` (`buyer_openid`),
+  KEY `index_seller` (`seller_id`),
+  CONSTRAINT `order_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `seller_info` (`seller_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+```
+
+- product_info
+
+
+```
+CREATE TABLE `product_info` (
+  `product_id` varchar(32) NOT NULL,
+  `product_name` varchar(64) NOT NULL,
+  `product_price` decimal(8,2) NOT NULL,
+  `product_description` varchar(64) DEFAULT NULL,
+  `product_icon` varchar(512) DEFAULT NULL,
+  `product_stock` int(11) NOT NULL DEFAULT '0',
+  `product_status` tinyint(3) DEFAULT '0',
+  `category_type` int(11) NOT NULL,
+  `seller_id` varchar(32) NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`product_id`),
+  KEY `category_type_idx` (`category_type`),
+  KEY `seller_id_idx` (`seller_id`),
+  CONSTRAINT `product_category_type` FOREIGN KEY (`category_type`) REFERENCES `product_category` (`category_type`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `product_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `seller_info` (`seller_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+```
+
+- product_categroy
+
+```
+CREATE TABLE `product_category` (
+  `category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(64) NOT NULL,
+  `category_type` int(11) NOT NULL,
+  `seller_id` varchar(32) NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`category_id`),
+  UNIQUE KEY `category_type` (`category_type`,`seller_id`),
+  KEY `index_seller_id` (`seller_id`),
+  CONSTRAINT `category_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `seller_info` (`seller_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4
+```
+
+-  seller_info
+
+```
+CREATE TABLE `seller_info` (
+  `seller_id` varchar(32) NOT NULL,
+  `username` varchar(32) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `telephone` varchar(32) NOT NULL,
+  `address` varchar(64) NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`seller_id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+```
 
