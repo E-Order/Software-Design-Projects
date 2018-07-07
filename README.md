@@ -20,3 +20,7 @@
 
 ![](https://github.com/E-Order/Dashboard/blob/master/document/ls6i4-ae9kw.gif)
 
+
+- 商家web端展示
+
+![](https://github.com/E-Order/Front-End/blob/master/%E5%95%86%E5%AE%B6%E7%AB%AFdemo.gif)
