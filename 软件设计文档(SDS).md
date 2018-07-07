@@ -399,7 +399,7 @@ axios.get(this.url, {params:{
 
 ![](https://github.com/E-Order/Dashboard/raw/master/document/graph/%E5%8C%85%E5%9B%BE.png)
 
-- Controller层(用户访问后台的接口，通过用户输入的url检查输入合法性，处理表单，进而调用service)
+- Controller层(用户访问后台的接口，通过用户提交的数据检查输入合法性，处理表单，进而调用service)
   - BuyerOrderController（买家端对于订单的操作）
   - BuyerProductController（买家端对于商品的操作）
   - SellerCategoryController（卖家端对于商品种类的操作）
